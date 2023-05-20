@@ -1,0 +1,20 @@
+.contact-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 40px;
+  padding: 0 20%;
+  gap: 20px;
+  font-size: 0.8rem;
+
+  p {
+    margin: 0;
+  }
+  .icon-container {
+    display: flex;
+    gap: 20px;
+    i {
+      color: black;
+      opacity: 50%;
+    }
+  }
+}
