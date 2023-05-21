@@ -2,10 +2,10 @@ import { useState } from "react";
 
 import "./portfolio.styles.scss";
 
-import PORTFOLIO_BACKUP_ITEMS from "../../backup/portfolio-backup-items";
+import PORTFOLIO_BACKUP_ITEMS from "../../backup-items/portfolio-backup-items";
 
 const Portfolio = () => {
-  const [portfolioItems, setPortfolioItems] = useState(PORTFOLIO_BACKUP_ITEMS);
+  const [portfolioItems] = useState(PORTFOLIO_BACKUP_ITEMS);
 
   const newPortfolioMap = portfolioItems.reduce((acc, cur) => {
     const existingSeries = acc.find((item) => item.series === cur.series);

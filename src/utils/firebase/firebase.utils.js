@@ -39,30 +39,28 @@ export const getAboutDoc = async () => {
 };
 
 export const setAboutDoc = async (updatedText) => {
-  if (!updatedText) return;
+  if (!updatedText) throw new Error("No input provided.");
   try {
     await setDoc(doc(db, "aboutItems", "LCDrbefq5lIK9FzDSh2e"), {
       name: "aboutText",
       text: updatedText,
     });
-    return `Succesfully updated text`;
   } catch (error) {
-    console.log(error);
+    console.error(`Error changing text: ${error}`);
   }
 };
 
 export const addResumeDoc = async (inputFields) => {
   if (!inputFields) return;
-  const { kind, startDate, endDate, name } = inputFields;
-
+  const { category, startDate, endDate, name } = inputFields;
   try {
     const docRef = await addDoc(collection(db, "resumeItems"), {
-      kind,
+      category,
       startDate,
       endDate,
       name,
     });
-    return `Document written with ID: ${docRef.id}`;
+    console.log("Document written with ID: ", docRef.id);
   } catch (error) {
     console.log(error);
   }
@@ -72,7 +70,7 @@ export const removeResumeDocs = async (itemsToRemove) => {
   if (!itemsToRemove) return;
   try {
     itemsToRemove.forEach(async (item) => {
-      if (!item) return;
+      if (!item) throw new Error("No item to delete");
       await deleteDoc(doc(db, "resumeItems", item));
       console.log(`Document removed with id: ${item}`);
     });

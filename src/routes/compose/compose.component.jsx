@@ -1,33 +1,28 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 
 import {
-  getAboutDoc,
   setAboutDoc,
   addResumeDoc,
   removeResumeDocs,
 } from "../../utils/firebase/firebase.utils";
 
+import { AboutContext } from "../../store/about/about.reducer";
+import { ResumeContext } from "../../store/resume/resume.reducer";
+
 import Form from "../../components/form/form.component";
 import Resume from "../resume/resume.component";
-import ABOUT_BACKUP_TEXT from "../../backup/about-backup";
 
 import "./compose.styles.scss";
 
 const Compose = () => {
+  const { aboutText, setAboutText } = useContext(AboutContext);
+  const { addResumeItem, removeResumeItems } = useContext(ResumeContext);
+
   const [textareaText, setTextareaText] = useState("");
 
   useEffect(() => {
-    const getText = async () => {
-      try {
-        const [{ text }] = await getAboutDoc();
-        setTextareaText(text);
-      } catch (error) {
-        console.log(error);
-        setTextareaText(ABOUT_BACKUP_TEXT);
-      }
-    };
-    getText();
-  }, []);
+    setTextareaText(aboutText);
+  }, [aboutText]);
 
   const changeHandler = (e) => {
     setTextareaText(e.target.value);
@@ -36,16 +31,25 @@ const Compose = () => {
   const handleSubmit = async (e, inputFields) => {
     e.preventDefault();
 
-    const formType = e.target.dataset.title.slice(0, -4);
+    const formType = e.target.dataset.title;
     if (!inputFields || !formType) return;
 
     if (formType === "about") {
-      const response = await setAboutDoc(textareaText);
-      console.log(response);
+      try {
+        await setAboutDoc(textareaText);
+        setAboutText(textareaText);
+        console.log("Text succesfully updated.");
+      } catch (error) {
+        console.error(error);
+        setAboutText(textareaText + " (Submit Failed...)");
+      }
     }
     if (formType !== "about") {
-      const response = await addResumeDoc({ ...inputFields, kind: formType });
-      console.log(response);
+      await addResumeDoc({
+        ...inputFields,
+        category: formType,
+      });
+      addResumeItem();
     }
   };
 
@@ -58,6 +62,7 @@ const Compose = () => {
     try {
       await removeResumeDocs(itemsToRemove);
       formElements.forEach((input) => (input.checked = false));
+      removeResumeItems();
     } catch (error) {
       console.log(error);
     }
@@ -70,7 +75,7 @@ const Compose = () => {
         onSubmit={(e) => {
           handleSubmit(e, { textareaText });
         }}
-        data-title="aboutForm"
+        data-title="about"
       >
         <textarea
           name="about"
@@ -82,9 +87,9 @@ const Compose = () => {
       </form>
       <p>Add/remove Resume items:</p>
       <Form
-        name="educationForm"
+        name="Education & Residencies"
         handleSubmit={handleSubmit}
-        label="Education & Residencies:"
+        label="Education & Residencies"
         inputs={[
           { type: "number", name: "startDate", placeholder: "Starting year" },
           { type: "number", name: "endDate", placeholder: "Ending year" },
@@ -96,7 +101,7 @@ const Compose = () => {
         ]}
       />
       <Form
-        name="exhibitionForm"
+        name="Exhibitions"
         handleSubmit={handleSubmit}
         label="Exhibitions:"
         inputs={[
@@ -109,7 +114,7 @@ const Compose = () => {
         ]}
       />
       <Form
-        name="prizeForm"
+        name="Prizes, Grants & Nominations"
         handleSubmit={handleSubmit}
         label="Prizes, Grants & Nominations:"
         inputs={[
@@ -118,7 +123,7 @@ const Compose = () => {
         ]}
       />
       <Form
-        name="publicationForm"
+        name="Publications"
         handleSubmit={handleSubmit}
         label="Publications:"
         inputs={[
@@ -131,7 +136,7 @@ const Compose = () => {
         ]}
       />
       <Form
-        name="otherForm"
+        name="Other"
         handleSubmit={handleSubmit}
         label="Other:"
         inputs={[

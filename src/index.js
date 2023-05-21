@@ -3,7 +3,8 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import reportWebVitals from "./reportWebVitals";
 
-import ResumeProvider from "./contexts/resume/resume.context";
+import ResumeProvider from "./store/resume/resume.reducer";
+import { AboutProvider } from "./store/about/about.reducer";
 
 import Home from "./routes/home/home.component";
 import ErrorPage from "./routes/error/error.component";
@@ -49,7 +50,9 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <ResumeProvider>
-      <RouterProvider router={router} />
+      <AboutProvider>
+        <RouterProvider router={router} />
+      </AboutProvider>
     </ResumeProvider>
   </React.StrictMode>
 );
