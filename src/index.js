@@ -3,8 +3,9 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import reportWebVitals from "./reportWebVitals";
 
-import ResumeProvider from "./store/resume/resume.reducer";
+import { ResumeProvider } from "./store/resume/resume.reducer";
 import { AboutProvider } from "./store/about/about.reducer";
+import { AdminProvider } from "./store/admin/admin.reducer";
 
 import Home from "./routes/home/home.component";
 import ErrorPage from "./routes/error/error.component";
@@ -13,6 +14,7 @@ import Portfolio from "./routes/portfolio/portfolio.component";
 import Resume from "./routes/resume/resume.component";
 import About from "./routes/about/about.component";
 import Compose from "./routes/compose/compose.component";
+import Login from "./routes/login/login.component";
 
 import "./index.scss";
 
@@ -42,6 +44,10 @@ const router = createBrowserRouter([
         path: "compose",
         element: <Compose />,
       },
+      {
+        path: "login",
+        element: <Login />,
+      },
     ],
   },
 ]);
@@ -49,11 +55,13 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <ResumeProvider>
-      <AboutProvider>
-        <RouterProvider router={router} />
-      </AboutProvider>
-    </ResumeProvider>
+    <AdminProvider>
+      <ResumeProvider>
+        <AboutProvider>
+          <RouterProvider router={router} />
+        </AboutProvider>
+      </ResumeProvider>
+    </AdminProvider>
   </React.StrictMode>
 );
 

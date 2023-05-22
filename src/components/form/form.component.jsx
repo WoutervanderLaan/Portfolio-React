@@ -5,6 +5,8 @@ const Form = ({ name, label, inputs, handleSubmit }) => {
     startDate: "",
     endDate: "",
     name: "",
+    email: "",
+    password: "",
   };
   const [inputValues, setInputValues] = useState(defaultFormValues);
 

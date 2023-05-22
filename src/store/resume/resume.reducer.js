@@ -40,7 +40,7 @@ const updateResumeState = async () => {
   }
 };
 
-const ResumeProvider = ({ children }) => {
+export const ResumeProvider = ({ children }) => {
   const [resumeItems, dispatch] = useReducer(resumeReducer, INITIAL_STATE);
 
   const setResumeItems = (items) => {
@@ -125,5 +125,3 @@ const ResumeProvider = ({ children }) => {
     <ResumeContext.Provider value={value}>{children}</ResumeContext.Provider>
   );
 };
-
-export default ResumeProvider;

@@ -11,7 +11,7 @@ const Portfolio = () => {
   const [arrowBoolean, setArrowBoolean] = useState(false);
 
   window.addEventListener("scroll", (e) => {
-    window.scrollY > 2000 ? setArrowBoolean(true) : setArrowBoolean(false);
+    window.scrollY > 1500 ? setArrowBoolean(true) : setArrowBoolean(false);
   });
 
   const newPortfolioMap = portfolioItems.reduce((acc, cur) => {

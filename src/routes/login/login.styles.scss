@@ -1,0 +1,48 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  margin: 40px auto 100px;
+  padding: 0 20%;
+  width: 60%;
+  align-content: center;
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 60%;
+    label {
+      font-size: 1.3rem;
+    }
+    input {
+      font: inherit;
+      margin-top: 20px;
+      width: 60%;
+      height: 30px;
+    }
+    button {
+      margin: 20px;
+      height: 30px;
+      width: 80px;
+      font: inherit;
+      background-color: white;
+      border: 1px solid grey;
+      &:hover {
+        background-color: rgb(209, 209, 209);
+      }
+      &:active {
+        background-color: grey;
+      }
+    }
+  }
+}
+
+@media (max-width: 850px) {
+  .login-container {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0;
+    form {
+      width: 100%;
+    }
+  }
+}

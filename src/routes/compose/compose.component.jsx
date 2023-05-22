@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 
 import {
   setAboutDoc,
@@ -8,6 +9,7 @@ import {
 
 import { AboutContext } from "../../store/about/about.reducer";
 import { ResumeContext } from "../../store/resume/resume.reducer";
+import { AdminContext } from "../../store/admin/admin.reducer";
 
 import Form from "../../components/form/form.component";
 import Resume from "../resume/resume.component";
@@ -15,14 +17,20 @@ import Resume from "../resume/resume.component";
 import "./compose.styles.scss";
 
 const Compose = () => {
+  const { isAdminLoggedIn } = useContext(AdminContext);
   const { aboutText, setAboutText } = useContext(AboutContext);
   const { addResumeItem, removeResumeItems } = useContext(ResumeContext);
-
   const [textareaText, setTextareaText] = useState("");
 
+  const navigate = useNavigate();
+
   useEffect(() => {
+    if (!isAdminLoggedIn) {
+      navigate("/login");
+    }
+
     setTextareaText(aboutText);
-  }, [aboutText]);
+  }, [aboutText, isAdminLoggedIn, navigate]);
 
   const changeHandler = (e) => {
     setTextareaText(e.target.value);

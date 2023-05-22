@@ -9,10 +9,10 @@ const organizeItemsChronologically = (items) => {
   });
 };
 
-const TableCategory = ({ category, items, compose }) => {
+const TableCategory = ({ category, items, compose, position }) => {
   const orderedItems = organizeItemsChronologically(items);
   return (
-    <>
+    <div style={{ order: position }}>
       <p>{`${category}:`}</p>
       <table>
         <tbody>
@@ -22,7 +22,7 @@ const TableCategory = ({ category, items, compose }) => {
         </tbody>
       </table>
       <br />
-    </>
+    </div>
   );
 };
 
