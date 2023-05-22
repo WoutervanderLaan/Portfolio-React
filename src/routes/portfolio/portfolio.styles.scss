@@ -28,3 +28,18 @@
     }
   }
 }
+
+@media (max-width: 850px) {
+  .portfolio-container {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0 20px 0 20px;
+    width: 100%;
+    .portfolio-series-container {
+      border-bottom: 1px solid grey;
+      img {
+        max-width: 100%;
+      }
+    }
+  }
+}

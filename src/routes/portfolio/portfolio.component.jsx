@@ -2,10 +2,17 @@ import { useState } from "react";
 
 import "./portfolio.styles.scss";
 
+import Arrow from "../../components/arrow/arrow.component";
+
 import PORTFOLIO_BACKUP_ITEMS from "../../backup-items/portfolio-backup-items";
 
 const Portfolio = () => {
-  const [portfolioItems] = useState(PORTFOLIO_BACKUP_ITEMS);
+  const [portfolioItems, setPortfolioItems] = useState(PORTFOLIO_BACKUP_ITEMS);
+  const [arrowBoolean, setArrowBoolean] = useState(false);
+
+  window.addEventListener("scroll", (e) => {
+    window.scrollY > 2000 ? setArrowBoolean(true) : setArrowBoolean(false);
+  });
 
   const newPortfolioMap = portfolioItems.reduce((acc, cur) => {
     const existingSeries = acc.find((item) => item.series === cur.series);
@@ -40,27 +47,30 @@ const Portfolio = () => {
   }, []);
 
   return (
-    <div className="portfolio-container">
-      {newPortfolioMap.map((item, index) => {
-        return (
-          <div key={index} className="portfolio-series-container">
-            <p>{item.title}</p>
-            {item.material && <p>{item.material}</p>}
-            {item.dimensions && <p>{item.dimensions}</p>}
-            {item.description && <p>{item.description}</p>}
-            <div className="image-container">
-              {item.img.map((img, index) => {
-                return (
-                  <a href={img} key={index}>
-                    <img src={img} alt="art" />
-                  </a>
-                );
-              })}
+    <>
+      <div className="portfolio-container">
+        {newPortfolioMap.map((item, index) => {
+          return (
+            <div key={index} className="portfolio-series-container">
+              <p>{item.title}</p>
+              {item.material && <p>{item.material}</p>}
+              {item.dimensions && <p>{item.dimensions}</p>}
+              {item.description && <p>{item.description}</p>}
+              <div className="image-container">
+                {item.img.map((img, index) => {
+                  return (
+                    <a href={img} key={index}>
+                      <img src={img} alt="art" />
+                    </a>
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        );
-      })}
-    </div>
+          );
+        })}
+      </div>
+      {arrowBoolean && <Arrow />}
+    </>
   );
 };
 

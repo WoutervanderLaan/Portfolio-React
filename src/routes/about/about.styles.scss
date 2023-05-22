@@ -10,3 +10,12 @@
     margin: 0;
   }
 }
+
+@media (max-width: 850px) {
+  .about-container {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0 20px 0 20px;
+    width: 100%;
+  }
+}

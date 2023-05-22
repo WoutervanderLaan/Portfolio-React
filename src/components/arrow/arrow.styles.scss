@@ -1,0 +1,43 @@
+.arrow {
+  font-size: 0.7rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 80px;
+  height: 80px;
+  position: fixed;
+  bottom: 5%;
+  left: 5%;
+  color: grey;
+  text-decoration: none;
+  &:hover {
+    animation-name: rotate;
+    animation-duration: 0.5s;
+  }
+
+  @keyframes rotate {
+    0% {
+      transform: translateY(0);
+    }
+    25% {
+      transform: translateY(-10px);
+    }
+    50% {
+      transform: translateY(0);
+    }
+    75% {
+      transform: translateY(-10px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+}
+
+@media (max-width: 850px) {
+  .arrow {
+    position: static;
+    margin: 0 auto;
+  }
+}
