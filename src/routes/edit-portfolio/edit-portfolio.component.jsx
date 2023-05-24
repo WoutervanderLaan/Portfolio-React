@@ -41,7 +41,7 @@ const EditPortfolio = () => {
     try {
       const response = await fetch("/", {
         method: "POST",
-        body: encode({ "form-name": "portfolio", ...formFields }),
+        body: encode({ formname: "portfolio", ...formFields }),
       });
       console.log(response);
       alert("Success!");
@@ -59,6 +59,7 @@ const EditPortfolio = () => {
       method="post"
       onSubmit={handleSubmit}
     >
+      <input type="hidden" name="form-name" value="portfolio" />
       <p>Upload image:</p>
       <input
         name="series"
