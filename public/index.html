@@ -39,6 +39,15 @@
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
+    <form name="portfolio" netlify netlify-honeypot="bot-field" hidden>
+      <input type="text" name="series" />
+      <input type="text" name="titleAndYear" />
+      <input type="text" name="material" />
+      <input type="text" name="dimensions" />
+      <textarea name="description"></textarea>
+      <input type="file" name="image" multiple="true" accept="image/*" />
+    </form>
+
     <div id="root"></div>
     <!--
       This HTML file is a template.

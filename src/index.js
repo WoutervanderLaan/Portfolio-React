@@ -14,6 +14,7 @@ import Portfolio from "./routes/portfolio/portfolio.component";
 import Resume from "./routes/resume/resume.component";
 import About from "./routes/about/about.component";
 import Compose from "./routes/compose/compose.component";
+import EditPortfolio from "./routes/edit-portfolio/edit-portfolio.component";
 import Login from "./routes/login/login.component";
 
 import "./index.scss";
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
       {
         path: "compose",
         element: <Compose />,
+      },
+      {
+        path: "edit-portfolio",
+        element: <EditPortfolio />,
       },
       {
         path: "login",
