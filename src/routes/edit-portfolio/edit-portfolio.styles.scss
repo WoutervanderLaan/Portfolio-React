@@ -9,19 +9,23 @@
     margin: 10px 0;
     padding: 10px;
     border: 1px solid grey;
+    .info-container {
+      display: flex;
+      flex-direction: column;
+
+      textarea {
+        font-family: inherit;
+        font-size: inherit;
+        box-sizing: border-box;
+        margin: 5px 0;
+        border: 1px solid grey;
+        resize: none;
+        outline: none;
+      }
+    }
     input {
       font: inherit;
       margin: 5px 0;
-    }
-    textarea {
-      font-family: inherit;
-      font-size: inherit;
-      box-sizing: border-box;
-      width: 90%;
-      margin: 5px 0;
-      border: 1px solid grey;
-      resize: none;
-      outline: none;
     }
   }
 }
