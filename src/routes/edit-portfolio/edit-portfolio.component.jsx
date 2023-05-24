@@ -52,67 +52,67 @@ const EditPortfolio = () => {
   };
 
   return (
-    <div className="portfolio-form-container">
-      <form
-        name="portfolio"
-        encType="multipart/form-data"
-        method="post"
-        onSubmit={handleSubmit}
-      >
-        <p>Upload image:</p>
-        <input
-          name="series"
-          type="text"
-          placeholder="Series"
-          value={series}
-          onChange={changeHandler}
-        />
-        <br />
-        <input
-          name="titleAndYear"
-          type="text"
-          placeholder="Title & Year"
-          value={titleAndYear}
-          onChange={changeHandler}
-        />
-        <br />
-        <input
-          name="material"
-          type="text"
-          placeholder="Materials"
-          value={material}
-          onChange={changeHandler}
-        />
-        <br />
-        <input
-          name="dimensions"
-          type="text"
-          placeholder="Dimensions"
-          value={dimensions}
-          onChange={changeHandler}
-        />{" "}
-        <br />
-        <textarea
-          name="description"
-          placeholder="Describe work here."
-          rows="5"
-          value={description}
-          onChange={changeHandler}
-        ></textarea>
-        <input
-          type="file"
-          name="image"
-          //   value={img}
-          accept="image/*"
-          //   onInput={imageChangeHandler}
-        />
-        <br />
-        <p>Series:</p>
-        <div className="portfolio-series"></div>
-        <br />
-        <input type="submit" value="Upload" />
-      </form>
-    </div>
+    // <div className="portfolio-form-container">
+    <form
+      name="portfolio"
+      encType="multipart/form-data"
+      method="post"
+      onSubmit={handleSubmit}
+    >
+      <p>Upload image:</p>
+      <input
+        name="series"
+        type="text"
+        placeholder="Series"
+        value={series}
+        onChange={changeHandler}
+      />
+      <br />
+      <input
+        name="titleAndYear"
+        type="text"
+        placeholder="Title & Year"
+        value={titleAndYear}
+        onChange={changeHandler}
+      />
+      <br />
+      <input
+        name="material"
+        type="text"
+        placeholder="Materials"
+        value={material}
+        onChange={changeHandler}
+      />
+      <br />
+      <input
+        name="dimensions"
+        type="text"
+        placeholder="Dimensions"
+        value={dimensions}
+        onChange={changeHandler}
+      />{" "}
+      <br />
+      <textarea
+        name="description"
+        placeholder="Describe work here."
+        rows="5"
+        value={description}
+        onChange={changeHandler}
+      ></textarea>
+      <input
+        type="file"
+        name="image"
+        //   value={img}
+        accept="image/*"
+        //   onInput={imageChangeHandler}
+      />
+      <br />
+      <p>Series:</p>
+      <div className="portfolio-series"></div>
+      <br />
+      <input type="submit" value="Upload" />
+    </form>
+    // </div>
   );
 };
 
