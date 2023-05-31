@@ -1,22 +1,15 @@
 import { Outlet, Link } from "react-router-dom";
-import { useContext } from "react";
+import { useSelector } from "react-redux";
 
-import { adminLogOut } from "../../utils/firebase/firebase.utils";
-import { AdminContext } from "../../store/admin/admin.reducer";
+import { selectIsAdminLoggedIn } from "../../store/admin/admin.selector";
+
+import ProtectedRoutes from "../protected-routes/protected-routes.component";
+import LoginButton from "../login-button/login-button.component";
 
 import "./navigation.styles.scss";
 
 const Navigation = () => {
-  const { isAdminLoggedIn, logOutAdmin } = useContext(AdminContext);
-
-  const handleClick = async () => {
-    try {
-      await adminLogOut();
-      logOutAdmin();
-    } catch (error) {
-      alert(error);
-    }
-  };
+  const isAdminLoggedIn = useSelector(selectIsAdminLoggedIn);
 
   return (
     <>
@@ -36,14 +29,7 @@ const Navigation = () => {
         <Link to={"contact"} className="navigation-element">
           <h2>Contact</h2>
         </Link>
-        <Link to={"compose"} className="admin-element compose">
-          <div></div>
-        </Link>
-        {isAdminLoggedIn && <button onClick={handleClick}>LOG OUT</button>}
-
-        {/* <Link to={"edit-portfolio"} className="admin-element edit-portfolio">
-          <div></div>
-        </Link> */}
+        {isAdminLoggedIn ? <ProtectedRoutes /> : <LoginButton />}
       </div>
       <Outlet />
     </>

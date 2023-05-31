@@ -1,113 +1,68 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+
+import { selectIsAdminLoggedIn } from "../../store/admin/admin.selector";
+
+import {
+  deleteImages,
+  removePortfolioDocs,
+} from "../../utils/firebase/firebase.utils";
+
+import AddPortfolioForm from "../../components/add-portfolio-form/add-portfolio-form.component";
+import Portfolio from "../portfolio/portfolio.component";
+import Button from "../../components/button/button.component";
 
 import "./edit-portfolio.styles.scss";
 
-const defaultValues = {
-  series: "",
-  titleAndYear: "",
-  material: "",
-  dimensions: "",
-  description: "",
-};
-
-const encode = (data) => {
-  return Object.keys(data)
-    .map((key) => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
-    .join("&");
-};
-
 const EditPortfolio = () => {
-  const [formFields, setformFields] = useState(defaultValues);
-  //   const [img, setImg] = useState("");
-  const { series, titleAndYear, material, dimensions, description } =
-    formFields;
+  const isAdminLoggedIn = useSelector(selectIsAdminLoggedIn);
 
   const navigate = useNavigate();
 
-  const changeHandler = (e) => {
-    const { name, value } = e.target;
-    setformFields({ ...formFields, [name]: value });
-  };
+  useEffect(() => {
+    if (!isAdminLoggedIn) {
+      navigate("/login");
+    }
+  }, [isAdminLoggedIn, navigate]);
 
-  //   const imageChangeHandler = (e) => {
-  //     console.log(e.target.value);
-  //     setImg(e.target.value);
-  //   };
+  const handleEditPortfolioForm = async (e) => {
+    e.preventDefault();
 
-  const handleSubmit = async (e) => {
-    // try {
-    //   const response = await fetch("/", {
-    //     method: "POST",
-    //     body: encode({ "form-name": "portfolio", ...formFields }),
-    //   });
-    //   console.log(response);
-    //   alert("Success!");
-    //   navigate("/portfolio");
-    // } catch (error) {
-    //   alert(error);
-    // }
-    // e.preventDefault();
+    const formElements = [...e.target.elements];
+
+    const ImagesToRemove = formElements
+      .filter(
+        (element) =>
+          element.checked === true && element.className === "image-checkbox"
+      )
+      .map((item) => item.name);
+
+    if (ImagesToRemove.length > 0) {
+      try {
+        await deleteImages(ImagesToRemove);
+        await removePortfolioDocs(ImagesToRemove);
+        console.log("done");
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    const newSeriesOrder = formElements
+      .filter((element) => element.value >= 0)
+      .map((item) => ({ series: item.id, order: item.value }));
+    console.log(newSeriesOrder);
   };
 
   return (
-    <div className="portfolio-form-container">
-      <form
-        name="portfolio"
-        // encType="multipart/form-data"
-        method="post"
-        onSubmit={handleSubmit}
-        data-netlify="true"
-      >
-        <input type="hidden" name="form-name" value="portfolio" />
-
-        <div className="info-container">
-          <p>Upload image:</p>
-          <input
-            name="series"
-            type="text"
-            placeholder="Series"
-            value={series}
-            onChange={changeHandler}
-          />
-          <input
-            name="titleAndYear"
-            type="text"
-            placeholder="Title & Year"
-            value={titleAndYear}
-            onChange={changeHandler}
-          />
-          <input
-            name="material"
-            type="text"
-            placeholder="Materials"
-            value={material}
-            onChange={changeHandler}
-          />
-          <input
-            name="dimensions"
-            type="text"
-            placeholder="Dimensions"
-            value={dimensions}
-            onChange={changeHandler}
-          />
-          <textarea
-            name="description"
-            placeholder="Describe work here."
-            rows="8"
-            value={description}
-            onChange={changeHandler}
-          ></textarea>
-        </div>
-
-        <input type="file" name="image" accept="image/*" />
-
-        <p>Series:</p>
-        <div className="portfolio-series"></div>
-
-        <input type="submit" value="Upload" />
-      </form>
-    </div>
+    <>
+      <AddPortfolioForm />
+      <div className="edit-portfolio-container">
+        <form name="edit-portfolio" onSubmit={handleEditPortfolioForm}>
+          <Portfolio edit={true} />
+          <Button value="Submit" />
+        </form>
+      </div>
+    </>
   );
 };
 

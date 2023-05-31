@@ -1,5 +1,9 @@
+import { modifyFileName, reduceFileSize } from "../formatting.utils";
+
 import { initializeApp } from "firebase/app";
+
 // import { getAnalytics } from "firebase/analytics";
+
 import {
   getFirestore,
   collection,
@@ -10,6 +14,7 @@ import {
   deleteDoc,
   getDocs,
   writeBatch,
+  where,
 } from "firebase/firestore";
 
 import {
@@ -17,11 +22,19 @@ import {
   // createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-  onAuthStateChanged,
+  // onAuthStateChanged,
 } from "firebase/auth";
 
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytes,
+  deleteObject,
+} from "firebase/storage";
+
 const firebaseConfig = {
-  apiKey: "AIzaSyACOG8zW6LT4sWP9noCuOTlynYewWBV74M",
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: "art-portfolio-3122b.firebaseapp.com",
   projectId: "art-portfolio-3122b",
   storageBucket: "art-portfolio-3122b.appspot.com",
@@ -35,7 +48,7 @@ const app = initializeApp(firebaseConfig);
 
 ////////////////////// AUTH /////////////////////
 
-const auth = getAuth(app);
+export const auth = getAuth(app);
 
 // const adminSignUpWithEmailAndPassword = async (email, password) => {
 //   try {
@@ -57,6 +70,44 @@ export const adminLoginWithEmailAndPassword = async ({ email, password }) => {
 
 export const adminLogOut = async () => {
   await signOut(auth);
+};
+
+// export const onAuthStateChangedListener = (callback) => {
+//   if (!callback) return;
+//   return onAuthStateChanged(auth, callback);
+// };
+
+////////////////////// STORAGE /////////////////////
+
+const storage = getStorage(app);
+const imageStorageRef = ref(storage, "images");
+
+export const uploadFileToStorage = (fileArray, series) => {
+  const seriesStorageRef = ref(imageStorageRef, series);
+  const promiseArray = fileArray.map(async (file) => {
+    const reducedFileSize = await reduceFileSize(file);
+    const newFileName = modifyFileName(reducedFileSize.name);
+    const imageRef = ref(seriesStorageRef, newFileName);
+    return uploadBytes(imageRef, reducedFileSize);
+  });
+  return Promise.all(promiseArray);
+};
+
+export const fetchFileUrlFromStorage = async (fileName, series) => {
+  const request = await getDownloadURL(
+    ref(storage, `images/${series}/${fileName}`)
+  );
+  return request;
+};
+
+export const deleteImages = async (imageUrlList) => {
+  if (!imageUrlList) return;
+
+  const promiseList = imageUrlList.map((url) => {
+    const imageToDeleteRef = ref(storage, url);
+    return deleteObject(imageToDeleteRef);
+  });
+  Promise.all(promiseList);
 };
 
 ////////////////////// DB /////////////////////
@@ -93,45 +144,34 @@ export const getAboutDoc = async () => {
 
 export const setAboutDoc = async (updatedText) => {
   if (!updatedText) throw new Error("No input provided.");
-  try {
-    await setDoc(doc(db, "aboutItems", "LCDrbefq5lIK9FzDSh2e"), {
-      name: "aboutText",
-      text: updatedText,
-    });
-  } catch (error) {
-    console.error(`Error changing text: ${error}`);
-  }
+  await setDoc(doc(db, "aboutItems", "LCDrbefq5lIK9FzDSh2e"), {
+    name: "aboutText",
+    text: updatedText,
+  });
 };
 
 export const addResumeDoc = async (inputFields) => {
   if (!inputFields) return;
   const { category, startDate, endDate, name } = inputFields;
-  try {
-    const docRef = await addDoc(collection(db, "resumeItems"), {
-      category,
-      startDate,
-      endDate,
-      name,
-    });
-    console.log("Document written with ID: ", docRef.id);
-  } catch (error) {
-    console.log(error);
-  }
+  const docRef = await addDoc(collection(db, "resumeItems"), {
+    category,
+    startDate,
+    endDate,
+    name,
+  });
+  console.log("Document written with ID: ", docRef.id);
 };
 
 export const removeResumeDocs = async (itemsToRemove) => {
   if (!itemsToRemove) return;
-  try {
-    const promiseArray = itemsToRemove.map(async (item) => {
-      if (!item) throw new Error("No item to delete");
-      const itemToDelete = deleteDoc(doc(db, "resumeItems", item));
-      return itemToDelete;
-    });
-    await Promise.all(promiseArray);
-    alert(`Succesfully removed documents`);
-  } catch (error) {
-    console.log(error);
-  }
+
+  const promiseArray = itemsToRemove.map(async (item) => {
+    if (!item) throw new Error("No item to delete");
+    const itemToDelete = deleteDoc(doc(db, "resumeItems", item));
+    return itemToDelete;
+  });
+  await Promise.all(promiseArray);
+  console.log(`Succesfully removed documents`);
 };
 
 export const getResumeDocs = async () => {
@@ -146,4 +186,57 @@ export const getResumeDocs = async () => {
   } catch (err) {
     console.error(err);
   }
+};
+
+export const addPortfolioDoc = async (inputFields) => {
+  if (!inputFields) return;
+  const { series, titleAndYear, material, dimensions, description, image } =
+    inputFields;
+
+  try {
+    const docRef = await addDoc(collection(db, "portfolioItems"), {
+      series,
+      titleAndYear,
+      material,
+      dimensions,
+      description,
+      image,
+    });
+    console.log("Document written with ID: ", docRef.id);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getPortfolioDocs = async () => {
+  try {
+    const collectionRef = collection(db, "portfolioItems");
+    const q = query(collectionRef);
+    const querySnapshot = await getDocs(q);
+    const data = querySnapshot.docs.map((doc) => {
+      return { id: doc.id, ...doc.data() };
+    });
+    return data;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const removePortfolioDocs = async (imageUrlList) => {
+  if (!imageUrlList) return;
+
+  const promiseList = imageUrlList.map(async (imageUrl) => {
+    const q = query(
+      collection(db, "portfolioItems"),
+      where("image", "==", imageUrl)
+    );
+
+    const itemToDelete = await getDocs(q);
+
+    return itemToDelete.forEach((item) =>
+      deleteDoc(doc(db, "portfolioItems", item.id))
+    );
+  });
+
+  Promise.all(promiseList);
 };

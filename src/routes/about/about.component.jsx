@@ -1,18 +1,18 @@
-import { useContext } from "react";
+import { useSelector } from "react-redux";
 
-import { AboutContext } from "../../store/about/about.reducer";
+import { selectFormattedText } from "../../store/about/about.selector";
 
 import LoadingIcon from "../../components/loading-icon/loading-icon.component";
 
 import "./about.styles.scss";
 
 const About = () => {
-  const { selectFormattedText } = useContext(AboutContext);
+  const aboutText = useSelector(selectFormattedText);
 
-  return !selectFormattedText ? (
+  return !aboutText ? (
     <LoadingIcon />
   ) : (
-    <div className="about-container">{selectFormattedText}</div>
+    <div className="about-container">{aboutText}</div>
   );
 };
 

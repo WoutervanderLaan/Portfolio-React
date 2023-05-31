@@ -1,67 +1,65 @@
-import { useState } from "react";
+import { useState, useEffect, Fragment } from "react";
+import { useSelector, useDispatch } from "react-redux";
+
+import { selectMappedPortfolioItems } from "../../store/portfolio/portfolio.selector";
+import { setPortfolioItems } from "../../store/portfolio/portfolio.reducer";
+import { getPortfolioDocs } from "../../utils/firebase/firebase.utils";
+import { formatText } from "../../utils/formatting.utils";
+
+import Arrow from "../../components/arrow/arrow.component";
+import EditInputs from "../../components/edit-inputs/edit-inputs.component";
 
 import "./portfolio.styles.scss";
 
-import Arrow from "../../components/arrow/arrow.component";
-
-import PORTFOLIO_BACKUP_ITEMS from "../../backup-items/portfolio-backup-items";
-
-const Portfolio = () => {
-  const [portfolioItems, setPortfolioItems] = useState(PORTFOLIO_BACKUP_ITEMS);
+const Portfolio = ({ edit = false }) => {
   const [arrowBoolean, setArrowBoolean] = useState(false);
 
-  window.addEventListener("scroll", (e) => {
-    window.scrollY > 1500 ? setArrowBoolean(true) : setArrowBoolean(false);
-  });
+  const selectPortfolioMap = useSelector(selectMappedPortfolioItems);
 
-  const newPortfolioMap = portfolioItems.reduce((acc, cur) => {
-    const existingSeries = acc.find((item) => item.series === cur.series);
-    if (!existingSeries) {
-      const itemWithImageToArray = { ...cur, img: [cur.img] };
-      return [...acc, itemWithImageToArray];
-    }
-    if (existingSeries) {
-      const updatedArray = acc.map((item) => {
-        if (item === existingSeries) {
-          const title = item.title ? item.title : cur.title;
-          const material = item.material ? item.material : cur.material;
-          const dimensions = item.dimensions ? item.dimensions : cur.dimensions;
-          const description = item.description
-            ? item.description
-            : cur.description;
+  const dispatch = useDispatch();
 
-          return {
-            ...item,
-            title,
-            material,
-            dimensions,
-            description,
-            img: [...item.img, cur.img],
-          };
-        }
-        return item;
-      });
+  useEffect(() => {
+    const fetchPortfolioData = async () => {
+      const response = await getPortfolioDocs();
+      dispatch(setPortfolioItems(response));
+    };
+    fetchPortfolioData();
+  }, [dispatch]);
 
-      return updatedArray;
-    }
-  }, []);
+  if (!edit) {
+    window.addEventListener("scroll", (e) => {
+      window.scrollY > 1500 ? setArrowBoolean(true) : setArrowBoolean(false);
+    });
+  }
 
   return (
     <>
-      <div className="portfolio-container">
-        {newPortfolioMap.map((item, index) => {
+      <div className={`${edit ? "edit " : ""}portfolio-container`}>
+        {selectPortfolioMap.map((item, index) => {
           return (
             <div key={index} className="portfolio-series-container">
-              <p>{item.title}</p>
-              {item.material && <p>{item.material}</p>}
-              {item.dimensions && <p>{item.dimensions}</p>}
-              {item.description && <p>{item.description}</p>}
-              <div className="image-container">
-                {item.img.map((img, index) => {
+              {edit && <EditInputs item={item} index={index} />}
+              <div className="info-container">
+                <p>{item.titleAndYear}</p>
+                {item.material && <p>{item.material}</p>}
+                {item.dimensions && <p>{item.dimensions}</p>}
+                {item.description && formatText(item.description)}
+              </div>
+              <div className="images-container">
+                {item.image.map((img, index) => {
                   return (
-                    <a href={img} key={index}>
-                      <img src={img} alt="art" />
-                    </a>
+                    <div key={index} className="image-container">
+                      {edit && (
+                        <input
+                          type="checkbox"
+                          name={img}
+                          className="image-checkbox"
+                        ></input>
+                      )}
+                      <a href={img}>
+                        <img src={img} alt="art" />
+                      </a>
+                    </div>
                   );
                 })}
               </div>

@@ -5,7 +5,7 @@
   gap: 5px;
   padding-top: 20px;
   margin-left: 30px;
-  margin-bottom: 60px;
+  margin-bottom: 20px;
   .navigation-element {
     width: fit-content;
     text-decoration: none;
@@ -19,29 +19,39 @@
       font-size: 1.6rem;
     }
   }
-  .admin-element {
+  .login-element {
     position: absolute;
     width: 20px;
     height: 20px;
     border-radius: 50%;
-  }
-  .compose {
+    background-color: rgb(205, 205, 205);
     right: 20px;
     top: 20px;
-    background-color: rgb(205, 205, 205);
   }
-  .edit-portfolio {
-    right: 50px;
+
+  .logout-element {
+    position: absolute;
+    right: 20px;
     top: 20px;
-    background-color: rgb(220, 220, 220);
+    // button {
+    //   font-family: inherit;
+    //   background-color: white;
+    //   border: 1px solid grey;
+    //   &:hover {
+    //     background-color: rgb(209, 209, 209);
+    //   }
+    //   &:active {
+    //     background-color: grey;
+    //   }
+    // }
   }
 }
 
 @media (max-width: 850px) {
   .navigation-container {
     margin-left: 20px;
-    button {
-      width: 100px;
-    }
+    // button {
+    //   width: 100px;
+    // }
   }
 }

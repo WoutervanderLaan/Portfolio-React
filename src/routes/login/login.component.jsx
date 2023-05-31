@@ -1,7 +1,9 @@
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 
-import { AdminContext } from "../../store/admin/admin.reducer";
+import { logInAdmin } from "../../store/admin/admin.reducer";
+import { selectIsAdminLoggedIn } from "../../store/admin/admin.selector";
 
 import { adminLoginWithEmailAndPassword } from "../../utils/firebase/firebase.utils";
 
@@ -10,11 +12,12 @@ import Form from "../../components/form/form.component";
 import "./login.styles.scss";
 
 const Login = () => {
-  const { isAdminLoggedIn, logInAdmin } = useContext(AdminContext);
+  const isAdminLoggedIn = useSelector(selectIsAdminLoggedIn);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    if (isAdminLoggedIn) navigate("/compose");
+    if (isAdminLoggedIn) navigate("/");
   }, [isAdminLoggedIn, navigate]);
 
   const handleSubmit = async (e, { email, password }) => {
@@ -24,7 +27,9 @@ const Login = () => {
         email,
         password,
       });
-      logInAdmin(adminRef);
+      if (adminRef !== process.env.REACT_APP_UID_ADMIN_REF)
+        throw new Error("Invalid User");
+      dispatch(logInAdmin(adminRef));
     } catch (error) {
       alert(error);
     }

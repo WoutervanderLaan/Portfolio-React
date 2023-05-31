@@ -15,23 +15,9 @@
     }
     input {
       font: inherit;
-      margin-top: 20px;
+      margin: 10px 0;
       width: 60%;
       height: 30px;
-    }
-    button {
-      margin: 20px;
-      height: 30px;
-      width: 80px;
-      font: inherit;
-      background-color: white;
-      border: 1px solid grey;
-      &:hover {
-        background-color: rgb(209, 209, 209);
-      }
-      &:active {
-        background-color: grey;
-      }
     }
   }
 }

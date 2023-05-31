@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import Button from "../button/button.component";
 const Form = ({ name, label, inputs, handleSubmit }) => {
   const defaultFormValues = {
     startDate: "",
@@ -38,7 +39,7 @@ const Form = ({ name, label, inputs, handleSubmit }) => {
             />
           );
         })}
-        <button type="submit">Submit</button>
+        <Button value={"Submit"} />
       </form>
     </>
   );

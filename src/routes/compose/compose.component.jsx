@@ -1,27 +1,33 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 
 import {
   setAboutDoc,
   addResumeDoc,
+  getResumeDocs,
   removeResumeDocs,
 } from "../../utils/firebase/firebase.utils";
 
-import { AboutContext } from "../../store/about/about.reducer";
-import { ResumeContext } from "../../store/resume/resume.reducer";
-import { AdminContext } from "../../store/admin/admin.reducer";
+import { selectRawAboutText } from "../../store/about/about.selector";
+import { setAboutText } from "../../store/about/about.reducer";
+import { selectIsAdminLoggedIn } from "../../store/admin/admin.selector";
+
+import { setResumeItems } from "../../store/resume/resume.reducer";
 
 import Form from "../../components/form/form.component";
 import Resume from "../resume/resume.component";
+import Button from "../../components/button/button.component";
 
 import "./compose.styles.scss";
 
 const Compose = () => {
-  const { isAdminLoggedIn } = useContext(AdminContext);
-  const { aboutText, setAboutText } = useContext(AboutContext);
-  const { addResumeItem, removeResumeItems } = useContext(ResumeContext);
   const [textareaText, setTextareaText] = useState("");
 
+  const rawAboutText = useSelector(selectRawAboutText);
+  const isAdminLoggedIn = useSelector(selectIsAdminLoggedIn);
+
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,8 +35,8 @@ const Compose = () => {
       navigate("/login");
     }
 
-    setTextareaText(aboutText);
-  }, [aboutText, isAdminLoggedIn, navigate]);
+    setTextareaText(rawAboutText);
+  }, [rawAboutText, isAdminLoggedIn, navigate]);
 
   const changeHandler = (e) => {
     setTextareaText(e.target.value);
@@ -45,19 +51,24 @@ const Compose = () => {
     if (formType === "about") {
       try {
         await setAboutDoc(textareaText);
-        setAboutText(textareaText);
+        dispatch(setAboutText(textareaText));
         console.log("Text succesfully updated.");
       } catch (error) {
-        console.error(error);
-        setAboutText(textareaText + " (Submit Failed...)");
+        console.error(`Error changing text: ${error}`);
       }
     }
     if (formType !== "about") {
-      await addResumeDoc({
+      const newitem = {
         ...inputFields,
         category: formType,
-      });
-      addResumeItem();
+      };
+      try {
+        await addResumeDoc(newitem);
+        const data = await getResumeDocs();
+        dispatch(setResumeItems(data));
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
@@ -70,9 +81,10 @@ const Compose = () => {
     try {
       await removeResumeDocs(itemsToRemove);
       formElements.forEach((input) => (input.checked = false));
-      removeResumeItems();
+      const data = await getResumeDocs();
+      dispatch(setResumeItems(data));
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -91,7 +103,7 @@ const Compose = () => {
           rows="20"
           value={textareaText}
         ></textarea>
-        <button type="submit">Submit</button>
+        <Button value={"Submit"} />
       </form>
       <p>Add/remove Resume items:</p>
       <Form
@@ -154,7 +166,8 @@ const Compose = () => {
       />
       <form className="resume-form" onSubmit={handleDeleteSubmit}>
         <Resume compose={true} />
-        <button type="submit">Delete</button>
+        <Button value={"Delete"} />
+        {/* <button type="submit">Delete</button> */}
       </form>
     </div>
   );

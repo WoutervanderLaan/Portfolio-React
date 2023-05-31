@@ -1,11 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Provider } from "react-redux";
 import reportWebVitals from "./reportWebVitals";
 
-import { ResumeProvider } from "./store/resume/resume.reducer";
-import { AboutProvider } from "./store/about/about.reducer";
-import { AdminProvider } from "./store/admin/admin.reducer";
+import { store } from "./store/store";
 
 import Home from "./routes/home/home.component";
 import ErrorPage from "./routes/error/error.component";
@@ -60,13 +59,9 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <AdminProvider>
-      <ResumeProvider>
-        <AboutProvider>
-          <RouterProvider router={router} />
-        </AboutProvider>
-      </ResumeProvider>
-    </AdminProvider>
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
   </React.StrictMode>
 );
 

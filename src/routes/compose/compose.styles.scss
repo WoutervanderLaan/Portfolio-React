@@ -18,17 +18,6 @@
     resize: none;
     outline: none;
   }
-  button {
-    font-family: inherit;
-    background-color: white;
-    border: 1px solid grey;
-    &:hover {
-      background-color: rgb(209, 209, 209);
-    }
-    &:active {
-      background-color: grey;
-    }
-  }
   input {
     font: inherit;
     margin: 0 5px;

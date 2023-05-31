@@ -10,19 +10,21 @@
   .portfolio-series-container {
     padding-bottom: 30px;
     margin-bottom: 50px;
-    .image-container {
+    .images-container {
       display: flex;
-      flex-direction: row;
       flex-wrap: wrap;
+      width: 100%;
       gap: 10px;
-      img {
-        max-height: 200px;
+      .image-container {
         margin-top: 20px;
-        transition: transform 0.1s 0s ease;
-        &:hover {
-          transform: translateY(-4px);
-          -webkit-filter: opacity(40%);
-          filter: opacity(40%);
+        img {
+          max-height: 160px;
+          transition: transform 0.1s 0s ease;
+          &:hover {
+            transform: translateY(-4px);
+            -webkit-filter: opacity(40%);
+            filter: opacity(40%);
+          }
         }
       }
     }
@@ -41,5 +43,14 @@
         max-width: 100%;
       }
     }
+  }
+}
+
+.edit {
+  padding: 0;
+  border: 1px solid grey;
+  .portfolio-series-container {
+    margin: 10px;
+    border-bottom: 1px solid grey;
   }
 }
