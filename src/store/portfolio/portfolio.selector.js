@@ -7,6 +7,11 @@ export const selectRawPortfolioItems = createSelector(
   (portfolio) => portfolio.portfolioItems
 );
 
+export const selectSeriesOrder = createSelector(
+  [selectPortfolioReducer],
+  (portfolio) => portfolio.seriesOrder
+);
+
 export const selectPortfolioSeries = createSelector(
   [selectRawPortfolioItems],
   (portfolioItems) => {
@@ -25,7 +30,10 @@ export const selectMappedPortfolioItems = createSelector(
 
       // if no series exists, make new series and put associated image into array that will be filled with subsequent images with corresponding series name.
       if (!existingSeries) {
-        const itemWithImageToArray = { ...cur, image: [cur.image] };
+        const itemWithImageToArray = {
+          ...cur,
+          image: [cur.image],
+        };
         return [...acc, itemWithImageToArray];
       }
       // if series exists, each element (series category) in acc is checked to find corresponding series;
@@ -60,4 +68,10 @@ export const selectMappedPortfolioItems = createSelector(
         return updatedArray;
       }
     }, [])
+);
+
+export const selectIndexedPortfolioMap = createSelector(
+  [selectMappedPortfolioItems],
+  (portfolioMap) =>
+    portfolioMap.map((series, index) => ({ series: series.series, index }))
 );

@@ -22,7 +22,6 @@ import {
   // createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-  // onAuthStateChanged,
 } from "firebase/auth";
 
 import {
@@ -48,7 +47,7 @@ const app = initializeApp(firebaseConfig);
 
 ////////////////////// AUTH /////////////////////
 
-export const auth = getAuth(app);
+const auth = getAuth(app);
 
 // const adminSignUpWithEmailAndPassword = async (email, password) => {
 //   try {
@@ -71,11 +70,6 @@ export const adminLoginWithEmailAndPassword = async ({ email, password }) => {
 export const adminLogOut = async () => {
   await signOut(auth);
 };
-
-// export const onAuthStateChangedListener = (callback) => {
-//   if (!callback) return;
-//   return onAuthStateChanged(auth, callback);
-// };
 
 ////////////////////// STORAGE /////////////////////
 
@@ -214,7 +208,7 @@ export const getPortfolioDocs = async () => {
     const q = query(collectionRef);
     const querySnapshot = await getDocs(q);
     const data = querySnapshot.docs.map((doc) => {
-      return { id: doc.id, ...doc.data() };
+      return { ...doc.data() };
     });
     return data;
   } catch (err) {
@@ -239,4 +233,24 @@ export const removePortfolioDocs = async (imageUrlList) => {
   });
 
   Promise.all(promiseList);
+};
+
+export const setSeriesOrderDoc = async (seriesOrderObject) => {
+  if (!seriesOrderObject) return;
+  await setDoc(
+    doc(db, "seriesOrder", "J2oICtHO3dhQ2wib3oXL"),
+    seriesOrderObject
+  );
+};
+
+export const getSeriesOrderDoc = async () => {
+  try {
+    const collectionRef = collection(db, "seriesOrder");
+    const q = query(collectionRef);
+    const querySnapshot = await getDocs(q);
+    const data = querySnapshot.docs.map((doc) => doc.data());
+    return data;
+  } catch (err) {
+    console.error(err);
+  }
 };

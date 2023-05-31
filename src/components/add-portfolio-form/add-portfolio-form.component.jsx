@@ -11,6 +11,8 @@ import {
 import { selectPortfolioSeries } from "../../store/portfolio/portfolio.selector";
 import { setPortfolioItems } from "../../store/portfolio/portfolio.reducer";
 
+import "./add-portfolio-form.styles.scss";
+
 const defaultValues = {
   series: "",
   titleAndYear: "",

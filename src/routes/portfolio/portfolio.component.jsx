@@ -1,9 +1,18 @@
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-import { selectMappedPortfolioItems } from "../../store/portfolio/portfolio.selector";
-import { setPortfolioItems } from "../../store/portfolio/portfolio.reducer";
-import { getPortfolioDocs } from "../../utils/firebase/firebase.utils";
+import {
+  selectMappedPortfolioItems,
+  selectSeriesOrder,
+} from "../../store/portfolio/portfolio.selector";
+import {
+  setPortfolioItems,
+  organisePortfolioSeries,
+} from "../../store/portfolio/portfolio.reducer";
+import {
+  getPortfolioDocs,
+  getSeriesOrderDoc,
+} from "../../utils/firebase/firebase.utils";
 import { formatText } from "../../utils/formatting.utils";
 
 import Arrow from "../../components/arrow/arrow.component";
@@ -13,17 +22,21 @@ import "./portfolio.styles.scss";
 
 const Portfolio = ({ edit = false }) => {
   const [arrowBoolean, setArrowBoolean] = useState(false);
-
   const selectPortfolioMap = useSelector(selectMappedPortfolioItems);
+
+  const seriesOrder = useSelector(selectSeriesOrder);
+  // console.log(seriesOrder);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const fetchPortfolioData = async () => {
+    const fetchData = async () => {
       const response = await getPortfolioDocs();
       dispatch(setPortfolioItems(response));
+      const seriesOrder = await getSeriesOrderDoc();
+      dispatch(organisePortfolioSeries(seriesOrder));
     };
-    fetchPortfolioData();
+    fetchData();
   }, [dispatch]);
 
   if (!edit) {

@@ -1,12 +1,15 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 import { selectIsAdminLoggedIn } from "../../store/admin/admin.selector";
+
+import { organisePortfolioSeries } from "../../store/portfolio/portfolio.reducer";
 
 import {
   deleteImages,
   removePortfolioDocs,
+  setSeriesOrderDoc,
 } from "../../utils/firebase/firebase.utils";
 
 import AddPortfolioForm from "../../components/add-portfolio-form/add-portfolio-form.component";
@@ -19,6 +22,7 @@ const EditPortfolio = () => {
   const isAdminLoggedIn = useSelector(selectIsAdminLoggedIn);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!isAdminLoggedIn) {
@@ -48,9 +52,16 @@ const EditPortfolio = () => {
       }
     }
     const newSeriesOrder = formElements
-      .filter((element) => element.value >= 0)
-      .map((item) => ({ series: item.id, order: item.value }));
+      .filter((element) => element.value >= 0 && element.type !== "submit")
+      .reduce((acc, cur) => {
+        return {
+          ...acc,
+          [cur.id]: Number(cur.value),
+        };
+      }, {});
     console.log(newSeriesOrder);
+    await setSeriesOrderDoc(newSeriesOrder);
+    dispatch(organisePortfolioSeries(newSeriesOrder));
   };
 
   return (

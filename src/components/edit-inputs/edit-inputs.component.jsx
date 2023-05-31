@@ -1,9 +1,17 @@
 import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+
+import { selectIndexedPortfolioMap } from "../../store/portfolio/portfolio.selector";
 
 import "./edit-inputs.styles.scss";
 
 const EditInputs = ({ item, index }) => {
   const [orderValue, setOrderValue] = useState(index);
+  const portfolioMapWithIndex = useSelector(selectIndexedPortfolioMap);
+
+  const [indexedPortfolioMap, setIndexedPortfolioMap] = useState(
+    portfolioMapWithIndex
+  );
 
   const changeHandler = (e) => {
     setOrderValue(e.target.value);

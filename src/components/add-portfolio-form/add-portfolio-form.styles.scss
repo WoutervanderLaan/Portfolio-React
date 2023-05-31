@@ -1,0 +1,41 @@
+.add-portfolio-container {
+  margin: 40px auto;
+  padding: 0 20%;
+  width: 60%;
+  font-size: 0.7rem;
+  font-weight: 300;
+  line-height: 20px;
+
+  form {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid grey;
+
+    .info-container {
+      display: flex;
+      flex-direction: column;
+
+      textarea {
+        font-family: inherit;
+        font-size: inherit;
+        box-sizing: border-box;
+        margin: 5px 0;
+        border: 1px solid grey;
+        resize: none;
+        outline: none;
+      }
+    }
+    input {
+      font: inherit;
+      margin: 5px 0;
+    }
+  }
+}
+
+@media (max-width: 850px) {
+  .add-portfolio-container {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0 20px;
+  }
+}
